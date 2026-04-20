@@ -17,6 +17,7 @@
 
 # https://github.com/facebookresearch/xformers/blob/main/setup.py
 export XFORMERS_BUILD_TYPE="Release"
+export MAX_JOBS="${MAX_JOBS:-4}"
 
 pip wheel \
 	-v \
