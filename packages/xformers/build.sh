@@ -17,7 +17,10 @@
 
 # https://github.com/facebookresearch/xformers/blob/main/setup.py
 export XFORMERS_BUILD_TYPE="Release"
-export MAX_JOBS="${MAX_JOBS:-2}"
+export MAX_JOBS="${MAX_JOBS:-4}"
+# nvcc 13.0 ICE on complex sm_90 hopper kernels (flash_fwd_hdimdiff_*) when
+# using internal parallel compilation. Force single-threaded ptxas to work around it.
+export NVCC_THREADS="${NVCC_THREADS:-1}"
 
 pip wheel \
 	-v \
