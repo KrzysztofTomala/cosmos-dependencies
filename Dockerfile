@@ -51,6 +51,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash 
 
 # Set the working directory for the application.
 WORKDIR /app
+RUN mkdir -p /app/.venv
 
 ENTRYPOINT ["/app/docker/entrypoint.sh"]
 CMD ["/bin/bash"]

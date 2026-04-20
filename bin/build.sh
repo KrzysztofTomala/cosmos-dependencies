@@ -42,6 +42,7 @@ if [[ ! "${TORCH_VERSION}" =~ ^[0-9]+\.[0-9]+$ ]]; then
 	exit 1
 fi
 
+export CUDA_VERSION="${CUDA_VERSION:-$(nvidia-smi | sed -n 's/.*CUDA Version: \([0-9]\+\.[0-9]\+\).*/\1/p' | head -1)}"
 timestamp=$(date +%Y%m%d%H%M%S)
 export OUTPUT_NAME="${timestamp}-${PACKAGE_NAME//-/_}-${PACKAGE_VERSION}-py${PYTHON_VERSION}-cu${CUDA_VERSION}-torch${TORCH_VERSION}"
 OUTPUT_DIR="${BUILD_DIR}/${OUTPUT_NAME}"

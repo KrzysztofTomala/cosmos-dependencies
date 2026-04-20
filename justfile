@@ -41,8 +41,8 @@ _docker cuda_version build_args='' run_args='':
     -it \
     --rm \
     --runtime=nvidia \
+    --user "$(id -u):$(id -g)" \
     -v .:/app \
-    -v /app/.venv \
     -v /root/.cache:/root/.cache \
     -v /root/.ccache:/root/.ccache \
     {{run_args}} $image_tag
