@@ -65,6 +65,7 @@ docker run \
     -e HOME=/tmp \
     -e HF_TOKEN="${HF_TOKEN}" \
     -e UV_CACHE_DIR=/tmp/uv-cache \
+    -e UV_PROJECT_ENVIRONMENT=/tmp/uv-project-venv \
     -v "$(pwd):/app" \
     -v "${HF_HOME}:/cache" \
     -v "${HOME}/.ccache:/root/.ccache" \
