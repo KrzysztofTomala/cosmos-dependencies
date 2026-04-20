@@ -30,8 +30,15 @@ if [ "$(id -u)" = "0" ]; then
         libavutil-dev
 fi
 
-cp "Video_Codec_SDK_13.0.19/Lib/linux/stubs/$(uname -m)/"* /usr/local/cuda/lib64/
-cp Video_Codec_SDK_13.0.19/Interface/* /usr/local/cuda/include
+# /usr/local/cuda is bind-mounted read-only by the nvidia container runtime.
+# Copy Video Codec SDK stubs and headers to writable /tmp locations instead.
+NVCODEC_STUBS_DIR="/tmp/nvcodec-stubs"
+NVCODEC_INCLUDE_DIR="/tmp/nvcodec-include"
+mkdir -p "${NVCODEC_STUBS_DIR}" "${NVCODEC_INCLUDE_DIR}"
+cp "Video_Codec_SDK_13.0.19/Lib/linux/stubs/$(uname -m)/"* "${NVCODEC_STUBS_DIR}/"
+cp Video_Codec_SDK_13.0.19/Interface/* "${NVCODEC_INCLUDE_DIR}/"
+export LD_LIBRARY_PATH="${NVCODEC_STUBS_DIR}:${LD_LIBRARY_PATH:-}"
+export LIBRARY_PATH="${NVCODEC_STUBS_DIR}:${LIBRARY_PATH:-}"
 
 temp_dir="$(mktemp -d)"
 cd "${temp_dir}"
@@ -45,6 +52,8 @@ sed -i "s/avcodec\.h>/avcodec\.h>\n#include <libavcodec\/bsf\.h>/" src/video/ffm
 
 mkdir build
 cd build
-cmake .. -DUSE_CUDA=ON -DCMAKE_BUILD_TYPE=Release
+cmake .. -DUSE_CUDA=ON -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_LIBRARY_PATH="${NVCODEC_STUBS_DIR}" \
+    -DCMAKE_INCLUDE_PATH="${NVCODEC_INCLUDE_DIR}"
 make -j "$(nproc)"
 make install

@@ -14,7 +14,9 @@
 # limitations under the License.
 
 ./build_lib.sh
-ln -sf /usr/local/lib/libdecord.so /usr/local/cuda/lib64/libdecord.so
+# libdecord.so is installed to /usr/local/lib by build_lib.sh.
+# Export it so pip can find it without writing to read-only /usr/local/cuda/lib64.
+export LD_LIBRARY_PATH="/usr/local/lib:${LD_LIBRARY_PATH:-}"
 pip wheel \
 	-v \
 	--no-deps \
