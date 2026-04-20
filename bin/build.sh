@@ -57,6 +57,7 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_BIN_HOME="${XDG_BIN_HOME:-$XDG_DATA_HOME/../bin}"
 export UV_CACHE_DIR="${UV_CACHE_DIR:-$XDG_CACHE_HOME/uv}"
+export UV_PROJECT_ENVIRONMENT="${UV_PROJECT_ENVIRONMENT:-/tmp/uv-project-venv}"
 export CCACHE_DIR="${CCACHE_DIR:-$HOME/.ccache}"
 env -i \
 	PACKAGE_NAME="${PACKAGE_NAME}" \
@@ -72,5 +73,6 @@ env -i \
 	XDG_DATA_HOME="${XDG_DATA_HOME}" \
 	XDG_BIN_HOME="${XDG_BIN_HOME}" \
 	UV_CACHE_DIR="${UV_CACHE_DIR}" \
+	UV_PROJECT_ENVIRONMENT="${UV_PROJECT_ENVIRONMENT}" \
 	CCACHE_DIR="${CCACHE_DIR}" \
 	bash -euxo pipefail "bin/_build.sh" "$@" |& tee "${log_file}"
