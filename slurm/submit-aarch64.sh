@@ -28,3 +28,6 @@ submit decord               0.6.0
 submit apex                 0.1.0
 submit sageattention        2.2.0.dev1
 submit torchcodec           0.9.1
+submit xformers             0.0.33
+submit groundingdino        0.1.0
+submit vllm                 0.11.0

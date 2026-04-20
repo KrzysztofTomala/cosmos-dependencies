@@ -23,8 +23,24 @@ export GITHUB_TOKEN=$(cat /home/ktomala/github_token)
 export XDG_BIN_HOME="${HOME}/.local/bin/$(uname -m)"
 export PATH="${XDG_BIN_HOME}:${PATH}"
 . /home/scratch.ktomala_other/venvs/v1/bin/activate
-mkdir -p "${XDG_RUNTIME_DIR}"
+mkdir -p "${XDG_RUNTIME_DIR}" "${XDG_BIN_HOME}"
 echo "Node: $(hostname), User: $(id), Arch: $(uname -m)"
+
+# Install gh CLI if not present
+if [ ! -f "${XDG_BIN_HOME}/gh" ]; then
+    echo "=== [$(date)] Installing gh CLI ==="
+    case "$(uname -m)" in
+        aarch64) _gh_arch="arm64" ;;
+        x86_64)  _gh_arch="amd64" ;;
+    esac
+    _gh_ver="2.45.0"
+    _tmpdir=$(mktemp -d)
+    curl -sL "https://github.com/cli/cli/releases/download/v${_gh_ver}/gh_${_gh_ver}_linux_${_gh_arch}.tar.gz" \
+        | tar xzf - -C "${_tmpdir}"
+    mv "${_tmpdir}/gh_${_gh_ver}_linux_${_gh_arch}/bin/gh" "${XDG_BIN_HOME}/gh"
+    rm -rf "${_tmpdir}"
+    echo "gh installed: $(gh --version | head -1)"
+fi
 
 : "${PACKAGE:?Must set PACKAGE}"
 : "${VERSION:?Must set VERSION}"
@@ -57,9 +73,11 @@ docker run \
 
 echo "=== [$(date)] Docker build done ==="
 echo "=== [$(date)] Built wheels: ==="
-find build -name "*.whl" -newer build -print
+find build -name "*${PACKAGE//-/_}*.whl" -print
 
 echo "=== [$(date)] Uploading wheels to GitHub release ==="
-find build -name "*.whl" -newer build -print0 | xargs -0 gh release upload v1.5.0 --repo KrzysztofTomala/cosmos-dependencies --clobber
+while IFS= read -r -d '' whl; do
+    gh release upload v1.5.0 --repo KrzysztofTomala/cosmos-dependencies --clobber "$whl"
+done < <(find build -name "*${PACKAGE//-/_}*.whl" -print0)
 
 echo "=== [$(date)] Done: ${PACKAGE}==${VERSION} ==="
