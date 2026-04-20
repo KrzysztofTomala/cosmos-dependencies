@@ -48,6 +48,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
         libswresample-dev \
         libswscale-dev \
         pkg-config \
+        python-is-python3 \
         python3-dev
 
 # Ensure apt-get update works at container runtime (cache mounts don't persist the partial dir).
