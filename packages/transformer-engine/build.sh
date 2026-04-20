@@ -15,7 +15,11 @@
 
 # https://github.com/NVIDIA/TransformerEngine?tab=readme-ov-file#pip-installation
 export NVTE_FRAMEWORK=pytorch
-export NVTE_CUDA_ARCHS="${TORCH_CUDA_ARCH_LIST//./}"
+# Only set NVTE_CUDA_ARCHS if TORCH_CUDA_ARCH_LIST is non-empty; if unset, TE
+# falls back to its CUDA-version-specific defaults (which is what we want).
+if [[ -n "${TORCH_CUDA_ARCH_LIST:-}" ]]; then
+    export NVTE_CUDA_ARCHS="${TORCH_CUDA_ARCH_LIST//./}"
+fi
 
 if [ "$(id -u)" = "0" ]; then
     apt-get update && apt-get install -y --no-install-recommends python3-dev
