@@ -19,10 +19,11 @@ MIN_CUDA_ARCH = (8, 0)  # Ampere
 
 
 def _parse_torch_cuda_arch(name: str) -> tuple[int, int]:
-    """Parse CUDA architecture from a string of the form sm_<major><minor>."""
+    """Parse CUDA architecture from a string of the form sm_<major><minor>[suffix]."""
     name = name.removeprefix("sm_")
-    major = int(name[:-1])
-    minor = int(name[-1])
+    digits = "".join(c for c in name if c.isdigit())
+    major = int(digits[:-1])
+    minor = int(digits[-1])
     return major, minor
 
 

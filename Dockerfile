@@ -33,12 +33,25 @@ RUN --mount=type=cache,target=/var/cache/apt \
         tree \
         wget
 
-# Install ffmpeg 6
+# Install ffmpeg 6 and decord build dependencies
 RUN --mount=type=cache,target=/var/cache/apt \
     --mount=type=cache,target=/var/lib/apt \
     add-apt-repository ppa:ubuntuhandbook1/ffmpeg6 && \
     apt-get update && \
-    apt-get install -y --no-install-recommends ffmpeg
+    apt-get install -y --no-install-recommends \
+        ffmpeg \
+        libavcodec-dev \
+        libavdevice-dev \
+        libavfilter-dev \
+        libavformat-dev \
+        libavutil-dev \
+        libswresample-dev \
+        libswscale-dev \
+        pkg-config \
+        python3-dev
+
+# Ensure apt-get update works at container runtime (cache mounts don't persist the partial dir).
+RUN mkdir -p /var/lib/apt/lists/partial
 
 ENV PATH="/usr/lib/ccache:/usr/local/bin:$PATH"
 
