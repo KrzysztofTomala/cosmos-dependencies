@@ -15,16 +15,20 @@
 # limitations under the License.
 
 # https://github.com/dmlc/decord?tab=readme-ov-file#installation
-apt-get update
-apt-get install -y --no-install-recommends \
-	build-essential \
-	make \
-	cmake \
-	ffmpeg \
-	libavcodec-dev \
-	libavfilter-dev \
-	libavformat-dev \
-	libavutil-dev
+# Install system deps only when running as root; non-root builds rely on
+# packages pre-installed in the Docker image (see Dockerfile).
+if [ "$(id -u)" = "0" ]; then
+    apt-get update
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        make \
+        cmake \
+        ffmpeg \
+        libavcodec-dev \
+        libavfilter-dev \
+        libavformat-dev \
+        libavutil-dev
+fi
 
 cp "Video_Codec_SDK_13.0.19/Lib/linux/stubs/$(uname -m)/"* /usr/local/cuda/lib64/
 cp Video_Codec_SDK_13.0.19/Interface/* /usr/local/cuda/include

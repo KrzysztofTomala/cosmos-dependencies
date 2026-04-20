@@ -17,7 +17,9 @@
 export NVTE_FRAMEWORK=pytorch
 export NVTE_CUDA_ARCHS="${TORCH_CUDA_ARCH_LIST//./}"
 
-apt-get update && apt-get install -y --no-install-recommends python3-dev
+if [ "$(id -u)" = "0" ]; then
+    apt-get update && apt-get install -y --no-install-recommends python3-dev
+fi
 
 # Create missing PyTorch header file for CUDA extension builds
 TORCH_INCLUDE=$(python -c "import torch; print(torch.__path__[0])")/include

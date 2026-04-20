@@ -15,17 +15,20 @@
 
 PACKAGE_REVISION="v${PACKAGE_VERSION}"
 
-# Install system dependencies
-apt-get update && apt-get install -y --no-install-recommends \
-	libavdevice-dev \
-	libavfilter-dev \
-	libavformat-dev \
-	libavcodec-dev \
-	libavutil-dev \
-	libswresample-dev \
-	libswscale-dev \
-	pkg-config \
-	python3-dev
+# Install system dependencies (only when running as root; non-root builds
+# rely on packages pre-installed in the Docker image via Dockerfile).
+if [ "$(id -u)" = "0" ]; then
+    apt-get update && apt-get install -y --no-install-recommends \
+        libavdevice-dev \
+        libavfilter-dev \
+        libavformat-dev \
+        libavcodec-dev \
+        libavutil-dev \
+        libswresample-dev \
+        libswscale-dev \
+        pkg-config \
+        python3-dev
+fi
 
 # Set pybind11 cmake directory (required - CMake can't find it otherwise)
 pybind11_DIR=$(python -c "import pybind11; print(pybind11.get_cmake_dir())")
