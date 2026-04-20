@@ -34,7 +34,7 @@ BUILD_DIR="${BUILD_DIR:-build}"
 
 echo "=== Building ${PACKAGE}==${VERSION} py${PYTHON_VERSION} torch${TORCH_VERSION} cu13.0 aarch64 ==="
 
-cd "$(dirname "$0")/.."
+cd /home/scratch.ktomala_other/cosmos-dependencies
 
 # Build Docker image — use a lockfile to avoid concurrent builds corrupting the cache
 DOCKER_LOCK=/tmp/cosmos-docker-build.lock
