@@ -57,6 +57,9 @@ docker run \
 
 echo "=== [$(date)] Docker build done ==="
 echo "=== [$(date)] Built wheels: ==="
-ls build/*${PACKAGE//-/_}*.whl 2>/dev/null || find build -name "*.whl" -newer build -ls
+find build -name "*.whl" -newer build -print
+
+echo "=== [$(date)] Uploading wheels to GitHub release ==="
+find build -name "*.whl" -newer build -print0 | xargs -0 gh release upload v1.5.0 --repo KrzysztofTomala/cosmos-dependencies --clobber
 
 echo "=== [$(date)] Done: ${PACKAGE}==${VERSION} ==="
