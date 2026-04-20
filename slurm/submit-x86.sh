@@ -23,15 +23,15 @@ submit() {
 }
 
 # Core packages required by cosmos-oss cu130_torch29
-submit flash-attn          2.7.4.post1
-submit natten               0.21.0
+# submit flash-attn          2.7.4.post1  # running: ipp2-0720
+# submit natten               0.21.0       # running: ipp2-0713
 submit transformer-engine   2.8
-submit xformers             0.0.33
+# submit xformers             0.0.33       # running: ipp2-0715
 submit decord               0.6.0
 
 # Extra packages
-submit apex                 0.1.0
-submit sageattention        2.2.0
+#submit apex                 0.1.0
+#submit sageattention        2.2.0
 submit torchcodec           0.9.1
 submit groundingdino        0.1.0-alpha2
 submit vllm                 0.11.0  TORCH_VERSION=2.8
