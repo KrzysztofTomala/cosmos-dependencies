@@ -50,10 +50,14 @@ find . -type f -exec sed -i "s/AVInputFormat \*/const AVInputFormat \*/g" {} \;
 sed -i "s/[[:space:]]AVCodec \*dec/const AVCodec \*dec/" src/video/video_reader.cc
 sed -i "s/avcodec\.h>/avcodec\.h>\n#include <libavcodec\/bsf\.h>/" src/video/ffmpeg/ffmpeg_common.h
 
+DECORD_INSTALL_DIR="/tmp/decord-install"
 mkdir build
 cd build
 cmake .. -DUSE_CUDA=ON -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX="${DECORD_INSTALL_DIR}" \
     -DCMAKE_LIBRARY_PATH="${NVCODEC_STUBS_DIR}" \
     -DCMAKE_INCLUDE_PATH="${NVCODEC_INCLUDE_DIR}"
 make -j "$(nproc)"
 make install
+export LD_LIBRARY_PATH="${DECORD_INSTALL_DIR}/lib:${LD_LIBRARY_PATH:-}"
+export LIBRARY_PATH="${DECORD_INSTALL_DIR}/lib:${LIBRARY_PATH:-}"
