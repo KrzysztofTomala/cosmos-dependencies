@@ -18,9 +18,17 @@
 # https://github.com/facebookresearch/xformers/blob/main/setup.py
 export XFORMERS_BUILD_TYPE="Release"
 export MAX_JOBS="${MAX_JOBS:-4}"
-# nvcc 13.0 ICE on complex sm_90 hopper kernels (flash_fwd_hdimdiff_*) when
-# using internal parallel compilation. Force single-threaded ptxas to work around it.
-export NVCC_THREADS="${NVCC_THREADS:-1}"
+
+# Clone xformers so we can patch setup.py before building.
+# xformers has FLASHATTENTION_DISABLE_PAGEDKV commented out due to an nvcc
+# segfault (https://github.com/Dao-AILab/flash-attention/issues/1453) that
+# also affects nvcc 13.0. Uncommenting it skips the paged KV kernel
+# instantiations that trigger the ICE.
+temp_dir="$(mktemp -d)"
+git clone --depth 1 --branch "v${PACKAGE_VERSION}" --recurse-submodules \
+    "https://github.com/facebookresearch/xformers.git" "${temp_dir}/xformers"
+sed -i 's|# ("paged", "-DFLASHATTENTION_DISABLE_PAGEDKV"),|("paged", "-DFLASHATTENTION_DISABLE_PAGEDKV"),|' \
+    "${temp_dir}/xformers/setup.py"
 
 pip wheel \
 	-v \
@@ -28,5 +36,5 @@ pip wheel \
 	--no-build-isolation \
 	--check-build-dependencies \
 	--wheel-dir="${OUTPUT_DIR}" \
-	"git+https://github.com/facebookresearch/xformers.git@v${PACKAGE_VERSION}#egg=xformers" \
+	"${temp_dir}/xformers" \
 	"$@"

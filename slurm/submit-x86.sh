@@ -27,7 +27,7 @@ submit() {
 # submit natten               0.21.0       # running: ipp2-0713
 # submit transformer-engine   2.8
 submit xformers             0.0.33
-submit decord               0.6.0
+#submit decord               0.6.0
 
 # Extra packages
 #submit apex                 0.1.0
